@@ -284,6 +284,8 @@ class NotionPyRenderer(BaseRenderer):
             return "".join([randChr() for c in range(4)])
         def textColSchema(colName):
             return { 'name' : colName, 'type': 'text' }
+        def titleColSchema(colName):
+            return { 'name' : colName, 'type': 'title' }
         #The schema is basically special identifiers + the type of property
         #to put into Notion. Coming from Markdown, everything is going to
         #be text.
@@ -291,18 +293,34 @@ class NotionPyRenderer(BaseRenderer):
         #     'name': 'Column',
         #     'type': 'text'
         # },
-        schema = { randColId() : textColSchema(headerRow[r]) for r in range(len(headerRow) - 1) }
+
+        # begin: add by qzc
+        schema={}
+        schema.update({
+                'title' : {
+                    'name': headerRow[0],
+                    'type': 'title'
+                }
+            })
+        schema1 = { randColId() : textColSchema(headerRow[r]) for r in range(len(headerRow)) if r != 0}
+        schema.update(schema1)
+        # schema = { randColId() : textColSchema(headerRow[r]) if r != 0 else 'title' : titleColSchema(headerRow[r]) for r in range(len(headerRow)) }
+        # end: add by qzc
+
+        # origin
+        # schema = { randColId() : textColSchema(headerRow[r]) for r in range(len(headerRow) - 1) }
         #The last one needs to be named 'Title' and is type title
         # 'title': {
         #     'name': 'Name',
         #     'type': 'title'
         # }
-        schema.update({
-                'title' : {
-                    'name': headerRow[-1],
-                    'type': 'title'
-                }
-            })
+        # schema.update({
+        #         'title' : {
+        #             'name': headerRow[-1],
+        #             'type': 'title'
+        #         }
+        #     })
+
 
         #CollectionViewBlock, and it's gonna be a bit hard to do because this
         #isn't fully fleshed out in notion-py yet but we can still use create_record
@@ -414,7 +432,8 @@ class NotionPyRenderer(BaseRenderer):
         def blockFunc(blockStr):
             return {
                 'type': EquationBlock,
-                'title_plaintext': blockStr.replace('\\', '\\\\')
+                # 'title_plaintext': blockStr.replace('\\', '\\\\')
+                'title_plaintext': blockStr.replace('\\', '\\')
             }
         return self.renderMultipleToStringAndCombine(token.children, blockFunc)
 

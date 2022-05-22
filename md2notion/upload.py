@@ -90,6 +90,23 @@ def uploadBlock(blockDescriptor, blockParent, mdFilePath, imagePathFunc=None):
         print(f"Uploading file '{imgSrc}'")
         newBlock.upload_file(str(imgSrc))
     elif isinstance(newBlock, CollectionViewBlock):
+        # add by qzc, change first and last key
+        # last_key=""
+        # new_last_key=""
+        # collectionSchema1={}
+        # for idx, key1 in enumerate(prop for prop in collectionSchema):
+        #     if idx == 0:
+        #         collectionSchema1["title"]=collectionSchema[key1]
+        #         collectionSchema1["title"]['type']='title'
+        #     else:
+        #         collectionSchema1[last_key] = collectionSchema[key1]
+        #         new_last_key = last_key
+        #     last_key = key1
+        # collectionSchema1[new_last_key]['type']='text'
+        # collectionSchema = collectionSchema1
+        # add by qzc, change first and last key
+
+
         #We should have generated a schema and rows for this one
         notionClient = blockParent._client #Hacky internals stuff...
         newBlock.collection = notionClient.get_collection(
